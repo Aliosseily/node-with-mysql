@@ -6,11 +6,6 @@ const getAllUsers = (req, res) => {
     if (err) {
       return res.status(500).json({ success: false, message: err.sqlMessage });
     }
-    if (response.length === 0) {
-      return res
-        .status(404)
-        .json({ success: false, message: "no users found!" });
-    }
     return res.status(200).send({ success: true, data: response });
   });
 };
@@ -44,8 +39,47 @@ const addUser = (req, res) => {
   });
 };
 
+const updateUser = (req, res) => {
+  const { body } = req;
+  const { id } = req.params;
+  let sql = `UPDATE user SET ? WHERE UserId = ${id}`;
+  connectDB.query(sql, body, (err, response) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: err.sqlMessage });
+    }
+    if (response.affectedRows === 0) {
+      return res
+        .status(404)
+        .send({ success: false, message: `user with id ${id} not found!` });
+    }
+    if (response.affectedRows === 1) {
+      return res.status(200).send({ success: true, data: response });
+    }
+  });
+};
+
+const deleteUser = (req, res) => {
+  const { id } = req.params;
+  let sqlQuery = `DELETE FROM user WHERE UserId = ${id}`;
+  connectDB.query(sqlQuery, (err, response) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: err.sqlMessage });
+    }
+    if (response.affectedRows === 0) {
+      return res
+        .status(404)
+        .send({ success: false, message: `user with id ${id} not found!` });
+    }
+    if (response.affectedRows === 1) {
+      return res.status(200).send({ success: true, data: response });
+    }
+  });
+};
+
 module.exports = {
   getAllUsers,
   getSingleUsers,
   addUser,
+  deleteUser,
+  updateUser,
 };
