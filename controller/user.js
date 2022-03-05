@@ -1,5 +1,18 @@
 const connectDB = require("../db/connect");
 
+// call stored procedure.
+const getStr = (req, res) => {
+  // let sqlQuery = "call GetAllUsedrs(?,?)";
+  //connectDB.query(sqlQuery, [param1, param2], function (err, result) { });
+  let sqlQuery = "call GetAllUsedrs";
+  connectDB.query(sqlQuery, (err, response) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: err.sqlMessage });
+    }
+    return res.status(200).send({ success: true, data: response });
+  });
+};
+
 const getAllUsers = (req, res) => {
   let sqlQuery = "SELECT * FROM user";
   connectDB.query(sqlQuery, (err, response) => {
@@ -82,4 +95,5 @@ module.exports = {
   addUser,
   deleteUser,
   updateUser,
+  getStr,
 };

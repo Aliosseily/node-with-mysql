@@ -6,7 +6,7 @@ const app = express();
 const usersRoutes = require("./routes/user");
 app.use(express.json());
 app.use(bodyParser.json());
-app.use("/user/", usersRoutes);
+app.use("/user", usersRoutes);
 
 const start = () => {
   connectDB.connect(function (err) {
